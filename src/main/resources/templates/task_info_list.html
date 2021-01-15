@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript">
+        function delTask(taskId){
+            var msg = "你确定要删除吗？";
+            if (confirm(msg) == true) {
+                fetch('http://localhost:8080/del_task',{
+                    method:'POST',
+                    body: 'taskId='+taskId,
+                    headers: {
+                        'content-type': 'application/x-www-form-urlencoded'
+                    }
+                })
+            }
+            return false;
+        }
+    </script>
+
+    <style type="text/css">
+        table{line-height: 25px;}
+        th{border: 1px solid #aaa;}
+        td{text-align: center;border: 1px solid #aaa}
+        tr:hover{background-color: gold}
+    </style>
+</head>
+<body>
+    <div>
+        <h3>【将会根据首次和二次前推2个月进行邮件提示，请注意查收并及时处理】</h3>
+        <table border="1" cellspacing="0" cellpadding="0">
+            <tr>
+                <th>任务编号</th>
+                <th>任务名称</th>
+                <th>任务详情</th>
+                <th>首次签约</th>
+                <th>首次提示</th>
+                <th>二次签约</th>
+                <th>二次提示</th>
+                <th>操作</th>
+            </tr>
+            <tr th:each="task, iterStat:${taskInfoList}">
+                <td th:text="${task.id}"></td>
+                <td th:text="${task.taskName}"></td>
+                <td th:text="${task.taskDetail}"></td>
+                <td th:text="${task.firstSignTime}"></td>
+                <td th:text="${task.firstPromptTime}"></td>
+                <td th:text="${task.secondSignTime}"></td>
+                <td th:text="${task.secondPromptTime}"></td>
+                <td><button th:onclick="'javascript:delTask('+${task.id}+')'">删除</button></td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        <h3>【创建提示任务】</h3>
+        <form id="iform" th:action="@{/create}" th:method="post" th:object="${taskInfoDto}">
+            <table border="1" cellspacing="0">
+                <tr>
+                    <th>任务名称</th>
+                    <th>任务详情</th>
+                    <th>首次签约</th>
+                    <th>二次签约</th>
+                </tr>
+                <tr>
+                    <td><input type="text" name="taskName" value="" th:value="*{taskName}"/></td>
+                    <td><input type="text" name="taskDetail" value="" th:value="*{taskDetail}"/></td>
+                    <td><input type="text" name="firstSignTime" value="" th:value="*{firstSignTime}"/></td>
+                    <td><input type="text" name="secondSignTime" value="" th:value="*{secondSignTime}"/></td>
+                    <td><input type="submit" value="添加"/></td>
+                </tr>
+            </table>
+        </form>
+
+    </div>
+</body>
+</html>
